@@ -12,88 +12,105 @@ import java.util.zip.ZipEntry;
 public class JarExtractUtil {
 
 	public static void extractJar(String jarFilePath, String destinationDirPath) throws NullPointerException, Exception {
-		File f = new File(jarFilePath);
-		JarFile jarFile = new JarFile(f);
-		File destDir = new File(destinationDirPath);
-		if (!destDir.exists()) {
-			destDir.mkdirs();
-		}
-
-		Enumeration entries = jarFile.entries();
-		while (entries.hasMoreElements()) {
-			ZipEntry entry = (ZipEntry) entries.nextElement();
-			if (entry.isDirectory()) {
-				File newDir = new File(destDir, entry.getName());
-				if (entry.getName().toUpperCase().indexOf("META-INF") > -1) {
-					continue;
-				}
-
-				System.out.println("Folder : " + newDir.getAbsolutePath());
-				newDir.mkdirs();
-
-			} else {
-				if (entry.getName().toUpperCase().indexOf("META-INF") > -1) {
-					continue;
-				}
-
-				File targetFileObj = new File(destDir, entry.getName());
-				System.out.println("File : " + targetFileObj.getAbsolutePath());
-
-				InputStream input = null;
-				FileOutputStream fileOutput = null;
-				BufferedOutputStream buffOutput = null;
-
-				try {
-					input = jarFile.getInputStream(entry);
-					fileOutput = new FileOutputStream(targetFileObj);
-					buffOutput = new BufferedOutputStream(fileOutput);
-					byte[] buf = new byte[4096];
-					int read = -1;
-					while ((read = input.read(buf)) != -1) {
-						buffOutput.write(buf, 0, read);
+		File f = null;
+		JarFile jarFile = null;
+		
+		try {
+			f = new File(jarFilePath);
+			jarFile = new JarFile(f);
+			File destDir = new File(destinationDirPath);
+			if (!destDir.exists()) {
+				destDir.mkdirs();
+			}
+	
+			Enumeration entries = jarFile.entries();
+			while (entries.hasMoreElements()) {
+				ZipEntry entry = (ZipEntry) entries.nextElement();
+				if (entry.isDirectory()) {
+					File newDir = new File(destDir, entry.getName());
+					if (entry.getName().toUpperCase().indexOf("META-INF") > -1) {
+						continue;
 					}
-					buffOutput.flush();
-					buffOutput.close();
-
-					fileOutput.close();
-					input.close();
-
-				} catch (IOException e) {
-					throw e;
-				} catch (Exception e) {
-					throw e;
-
-				} finally {
+					
+					newDir.mkdirs();
+					
+				} else {
+					if (entry.getName().toUpperCase().indexOf("META-INF") > -1) {
+						continue;
+					}
+	
+					File targetFileObj = new File(destDir, entry.getName());
+					
+					InputStream input = null;
+					FileOutputStream fileOutput = null;
+					BufferedOutputStream buffOutput = null;
+	
 					try {
-						if (buffOutput != null) {
-							buffOutput.close();
+						input = jarFile.getInputStream(entry);
+						fileOutput = new FileOutputStream(targetFileObj);
+						buffOutput = new BufferedOutputStream(fileOutput);
+						byte[] buf = new byte[4096];
+						int read = -1;
+						while ((read = input.read(buf)) != -1) {
+							buffOutput.write(buf, 0, read);
 						}
+						buffOutput.flush();
+						buffOutput.close();
+	
+						fileOutput.close();
+						input.close();
+	
 					} catch (IOException e) {
+						throw e;
 					} catch (Exception e) {
+						throw e;
+	
 					} finally {
-						buffOutput = null;
-					}
-
-					try {
-						if (fileOutput != null) {
-							fileOutput.close();
+						try {
+							if (buffOutput != null) {
+								buffOutput.close();
+							}
+						} catch (IOException e) {
+						} catch (Exception e) {
+						} finally {
+							buffOutput = null;
 						}
-					} catch (IOException e) {
-					} catch (Exception e) {
-					} finally {
-						fileOutput = null;
-					}
-
-					try {
-						if (input != null) {
-							input.close();
+	
+						try {
+							if (fileOutput != null) {
+								fileOutput.close();
+							}
+						} catch (IOException e) {
+						} catch (Exception e) {
+						} finally {
+							fileOutput = null;
 						}
-					} catch (IOException e) {
-					} catch (Exception e) {
-					} finally {
-						input = null;
+	
+						try {
+							if (input != null) {
+								input.close();
+							}
+						} catch (IOException e) {
+						} catch (Exception e) {
+						} finally {
+							input = null;
+						}
 					}
 				}
+			}
+		} catch (IOException e) {
+			throw e;
+		} catch (Exception e) {
+			throw e;
+		} finally {
+			try {
+				if (jarFile != null) {
+					jarFile.close();
+				}
+			} catch (IOException e) {
+			} catch (Exception e) {
+			} finally {
+				jarFile = null;
 			}
 		}
 	}

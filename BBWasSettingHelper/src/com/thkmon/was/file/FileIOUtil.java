@@ -9,15 +9,15 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 
-import com.thkmon.was.prototype.StringList;
+import com.thkmon.was.file.data.FileContent;
 
 public class FileIOUtil {
-	public static StringList readFile(File file) throws IOException, Exception {
+	public static FileContent readFile(File file) throws IOException, Exception {
 		if (file == null || !file.exists()) {
 			return null;
 		}
 
-		StringList resultList = null;
+		FileContent resultList = null;
 
 		FileInputStream fileInputStream = null;
 		InputStreamReader inputStreamReader = null;
@@ -31,7 +31,7 @@ public class FileIOUtil {
 			String oneLine = null;
 			while ((oneLine = bufferedReader.readLine()) != null) {
 				if (resultList == null) {
-					resultList = new StringList();
+					resultList = new FileContent();
 				}
 
 				resultList.add(oneLine);
@@ -52,7 +52,7 @@ public class FileIOUtil {
 		return resultList;
 	}
 
-	public static boolean writeFile(String filePath, StringList stringList, boolean bAppend)
+	public static boolean writeFile(String filePath, FileContent stringList, boolean bAppend)
 			throws IOException, Exception {
 		if (filePath == null || filePath.length() == 0) {
 			return false;
