@@ -77,8 +77,15 @@ public class BasicForm extends JFrame {
 	}
 	
 	
-	public JScrollPane addScrollPane(JTextArea obj, int left, int top, int width, int height) {
-		JScrollPane scrollPane = new JScrollPane(obj);
+	public JScrollPane addScrollPane(JTextArea obj, int left, int top, int width, int height, boolean isAutoLinefeed) {
+		JScrollPane scrollPane = null;
+		
+		if (isAutoLinefeed) {
+			scrollPane = new JScrollPane(obj, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+		} else {
+			scrollPane = new JScrollPane(obj);
+		}
+		
 		scrollPane.setBackground(Color.white);
 		scrollPane.setBounds(left, top, width, height);
 		
@@ -87,12 +94,17 @@ public class BasicForm extends JFrame {
 	}
 	
 	
-	public JTextArea addTextArea(int left, int top, int width, int height) {
+	public JTextArea addTextArea(int left, int top, int width, int height, boolean isAutoLinefeed) {
 
 		JTextArea obj = new JTextArea();
 		obj.setBackground(Color.white);
 		obj.setBounds(left, top, width, height);
 		obj.setFont(font);
+		
+		if (isAutoLinefeed) {
+			obj.setLineWrap(true);
+		}
+		
 		return obj;
 	}
 	

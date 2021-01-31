@@ -4,6 +4,24 @@ import com.thkmon.was.string.data.StringList;
 
 public class StringUtil {
 
+	
+	public static int parseInt(Object obj, int defaultValue) {
+		int result = defaultValue;
+		
+		try {
+			result = Integer.parseInt(String.valueOf(obj).trim());
+			
+		} catch (NumberFormatException e) {
+			result = defaultValue;
+			
+		} catch (Exception e) {
+			result = defaultValue;
+		}
+		
+		return result;
+	}
+	
+	
 	public static String parseStirng(Object obj) {
 		if (obj == null) {
 			return "";
@@ -60,24 +78,47 @@ public class StringUtil {
 
 		return res.toString();
 	}
-	
+
 	public static StringList splitToList(String str, String regex) {
 		if (str == null || str.length() == 0) {
 			return null;
 		}
-		
+
 		StringList result = null;
-		
+
 		String[] arr = str.split(regex);
 		if (arr != null && arr.length > 0) {
 			result = new StringList();
-			
+
 			int arrCount = arr.length;
-			for (int i=0; i<arrCount; i++) {
-				result.add(arr[i]);
+			for (int i = 0; i < arrCount; i++) {
+				if (arr[i].length() > 0) {
+					result.add(arr[i]);
+				}
 			}
 		}
-		
+
 		return result;
+	}
+
+	public static String revisePath(String path) {
+		return makeToSlashPath(path);
+	}
+
+	public static String makeToSlashPath(String path) {
+		if (path == null || path.trim().length() == 0) {
+			return "";
+
+		} else {
+			path = path.trim();
+		}
+
+		path = path.replace("\\", "/");
+
+		while (path.indexOf("//") > -1) {
+			path = path.replace("//", "/");
+		}
+
+		return path;
 	}
 }

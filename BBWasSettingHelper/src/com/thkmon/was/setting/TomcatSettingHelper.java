@@ -1,9 +1,9 @@
 package com.thkmon.was.setting;
 
-import java.io.File;
-
 import com.thkmon.was.common.CConst;
+import com.thkmon.was.error.MsgException;
 import com.thkmon.was.file.FileModifyUtil;
+import com.thkmon.was.file.FolderUtil;
 import com.thkmon.was.setting.data.Replacement;
 import com.thkmon.was.setting.data.ReplacementList;
 
@@ -12,18 +12,27 @@ public class TomcatSettingHelper extends SettingHelper {
 	@Override
 	public void doSetting(String tomcatPath, SettingData settingData) throws Exception {
 		String projectPath = settingData.getProjectPath();
-		if (projectPath == null || projectPath.length() == 0) {
-			throw new Exception("projectPath is null or empty.");
+		if (projectPath == null || projectPath.trim().length() == 0) {
+			throw new MsgException("projectPath is null or empty.");
+		} else {
+			projectPath = projectPath.trim();
+			FolderUtil.checkValidFolder(projectPath);
 		}
 		
-		String javaHome = settingData.getJavaHome();
-		if (javaHome == null || javaHome.length() == 0) {
-			throw new Exception("javaHome is null or empty.");
+		String javaHomePath = settingData.getJavaHomePath();
+		if (javaHomePath == null || javaHomePath.trim().length() == 0) {
+			throw new MsgException("javaHomePath is null or empty.");
+		} else {
+			javaHomePath = javaHomePath.trim();
+			FolderUtil.checkValidFolder(javaHomePath);
 		}
 		
-		String jreHome = settingData.getJreHome();
-		if (jreHome == null || jreHome.length() == 0) {
-			throw new Exception("jreHome is null or empty.");
+		String jreHomePath = settingData.getJreHomePath();
+		if (jreHomePath == null || jreHomePath.trim().length() == 0) {
+			throw new MsgException("jreHomePath is null or empty.");
+		} else {
+			jreHomePath = jreHomePath.trim();
+			FolderUtil.checkValidFolder(jreHomePath);
 		}
 		
 		{
@@ -36,9 +45,9 @@ public class TomcatSettingHelper extends SettingHelper {
 				StringBuffer newStrBuff = new StringBuffer();
 				newStrBuff.append("rem Make sure prerequisite environment variables are set");
 				newStrBuff.append(CConst.CARRIAGE_RETURN);
-				newStrBuff.append("set JAVA_HOME=").append(javaHome);
+				newStrBuff.append("set JAVA_HOME=").append(javaHomePath);
 				newStrBuff.append(CConst.CARRIAGE_RETURN);
-				newStrBuff.append("set JRE_HOME=").append(jreHome);
+				newStrBuff.append("set JRE_HOME=").append(jreHomePath);
 				newStrBuff.append(CConst.CARRIAGE_RETURN);
 				newStrBuff.append("set CATALINA_HOME=").append(tomcatPath);
 				newStrBuff.append(CConst.CARRIAGE_RETURN);
@@ -67,8 +76,8 @@ public class TomcatSettingHelper extends SettingHelper {
 					
 					boolean isFirstArg = true;
 					String oneArg = "";
-					int vmArgCount = settingData.getVmArgumentList().size();
-					for (int i=0; i<vmArgCount; i++) {
+					int listCount = settingData.getVmArgumentList().size();
+					for (int i=0; i<listCount; i++) {
 						oneArg = settingData.getVmArgumentList().get(i);
 						if (oneArg == null || oneArg.trim().length() == 0) {
 							continue;
@@ -93,9 +102,38 @@ public class TomcatSettingHelper extends SettingHelper {
 			
 			{
 				// classpath
-				String oldStr = "rem ----- Execute The Requested Command ---------------------------------------";
-				String newStr = "set \"CLASSPATH=%CLASSPATH%;" + projectPath + File.separator + "config\"" + CConst.CARRIAGE_RETURN + "rem ----- Execute The Requested Command ---------------------------------------";
-				replacementList.add(new Replacement(oldStr, newStr));
+				if (settingData != null && settingData.getClasspathList() != null && settingData.getClasspathList().size() > 0) {
+					String oldStr = "rem ----- Execute The Requested Command ---------------------------------------";
+					StringBuffer newStrBuff = new StringBuffer();
+					newStrBuff.append("set \"CLASSPATH=%CLASSPATH%;");
+					
+					boolean isFirstArg = true;
+					String oneArg = "";
+					int listCount = settingData.getClasspathList().size();
+					for (int i=0; i<listCount; i++) {
+						oneArg = settingData.getClasspathList().get(i);
+						if (oneArg == null || oneArg.trim().length() == 0) {
+							continue;
+						} else {
+							oneArg = oneArg.trim();
+						}
+						
+						if (isFirstArg) {
+							newStrBuff.append(oneArg);
+							isFirstArg = false;
+						} else {
+							newStrBuff.append(";");
+							newStrBuff.append(oneArg);
+						}
+					}
+					
+					newStrBuff.append(CConst.CARRIAGE_RETURN);
+					newStrBuff.append("rem ----- Execute The Requested Command ---------------------------------------");
+					
+					String newStr = newStrBuff.toString();
+					
+					replacementList.add(new Replacement(oldStr, newStr));
+				}
 			}
 			
 			FileModifyUtil.modifyFileContent(targetFilePath, replacementList);
@@ -106,9 +144,9 @@ public class TomcatSettingHelper extends SettingHelper {
 			String targetFilePath = tomcatPath + "\\conf\\server.xml";
 			ReplacementList replacementList = new ReplacementList();
 			
-			int basicPort = 80;
-			int shutdownPort = (basicPort > 999) ? (basicPort + 5) : (basicPort + 1005);
-			int ajpPort = (basicPort > 999) ? (basicPort + 9) : (basicPort + 1009);
+			int httpPort = settingData.getHttpPort();
+			int shutdownPort = settingData.getShutdownPort();
+			int ajpPort = settingData.getAjpPort();
 			
 			{
 				String oldStr = "<Server port=\"8005\" shutdown=\"SHUTDOWN\">";
@@ -118,7 +156,7 @@ public class TomcatSettingHelper extends SettingHelper {
 			
 			{
 				String oldStr = "<Connector port=\"8080\" protocol=\"HTTP/1.1\"";
-				String newStr = "<Connector URIEncoding=\"UTF-8\" port=\"" + basicPort + "\" protocol=\"HTTP/1.1\"";
+				String newStr = "<Connector URIEncoding=\"UTF-8\" port=\"" + httpPort + "\" protocol=\"HTTP/1.1\"";
 				replacementList.add(new Replacement(oldStr, newStr));
 			}
 			
@@ -135,15 +173,42 @@ public class TomcatSettingHelper extends SettingHelper {
 			}
 			
 			{
-				String oldStr = "      </Host>";
-				
-				StringBuffer newStrBuff = new StringBuffer();
-				newStrBuff.append("      <Context docBase=\"" + projectPath + "\\webapp\" path=\"/\" reloadable=\"false\"/>");
-				newStrBuff.append(CConst.CARRIAGE_RETURN);
-				newStrBuff.append("      </Host>");
-				String newStr = newStrBuff.toString();
-				
-				replacementList.add(new Replacement(oldStr, newStr));
+				if (settingData != null && settingData.getWebModuleList() != null && settingData.getWebModuleList().size() > 0) {
+					String oldStr = "      </Host>";
+					
+					StringBuffer newStrBuff = new StringBuffer();
+					
+					String oneArg = "";
+					int listCount = settingData.getWebModuleList().size();
+					for (int i=0; i<listCount; i++) {
+						oneArg = settingData.getWebModuleList().get(i);
+						if (oneArg == null || oneArg.trim().length() == 0) {
+							continue;
+						} else {
+							oneArg = oneArg.trim();
+						}
+						
+						int dotIndex = oneArg.indexOf(",");
+						if (dotIndex < 0) {
+							continue;
+						}
+						
+						String onePath = oneArg.substring(0, dotIndex).trim();
+						String oneDocBase = oneArg.substring(dotIndex + 1).trim();
+						
+						if (onePath.length() < 1 || oneDocBase.length() < 1) {
+							continue;
+						}
+						
+						newStrBuff.append("      <Context docBase=\"" + oneDocBase + "\" path=\"" + onePath + "\" reloadable=\"false\"/>");
+					}
+					
+					newStrBuff.append(CConst.CARRIAGE_RETURN);
+					newStrBuff.append("      </Host>");
+					String newStr = newStrBuff.toString();
+					
+					replacementList.add(new Replacement(oldStr, newStr));
+				}
 			}
 			
 			FileModifyUtil.modifyFileContent(targetFilePath, replacementList);
