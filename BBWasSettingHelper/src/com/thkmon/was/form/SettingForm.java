@@ -111,7 +111,16 @@ public class SettingForm {
 		projectFolderText.setText(CConst.PROJECT_PATH);
 		
 		projectFolderButton = bForm.addButton(left + (width - SMALL_BUTTON_GAP) + 10, top, SMALL_BUTTON_WIDTH, SMALL_BUTTON_HEIGHT, "Set");
-		projectFolderButton.addActionListener(null);
+		projectFolderButton.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				String selectedPath = new DialogWrapper().openFolderDialog(projectFolderText.getText());
+				if (selectedPath != null && selectedPath.length() > 0) {
+					projectFolderText.setText(selectedPath);
+				}
+			}
+		});
 		
 		plusTop(1);
 		
@@ -168,7 +177,16 @@ public class SettingForm {
 		javaHomeText.setText(CConst.JAVA_HOME);
 		
 		javaHomeButton = bForm.addButton(left + (width - SMALL_BUTTON_GAP) + 10, top, SMALL_BUTTON_WIDTH, SMALL_BUTTON_HEIGHT, "Set");
-		javaHomeButton.addActionListener(null);
+		javaHomeButton.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				String selectedPath = new DialogWrapper().openFolderDialog(javaHomeText.getText());
+				if (selectedPath != null && selectedPath.length() > 0) {
+					javaHomeText.setText(selectedPath);
+				}
+			}
+		});
 		
 		plusTop(1);
 		
@@ -179,7 +197,16 @@ public class SettingForm {
 		jreHomeText.setText(CConst.JRE_HOME);
 		
 		jreHomeButton = bForm.addButton(left + (width - SMALL_BUTTON_GAP) + 10, top, SMALL_BUTTON_WIDTH, SMALL_BUTTON_HEIGHT, "Set");
-		jreHomeButton.addActionListener(null);
+		jreHomeButton.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				String selectedPath = new DialogWrapper().openFolderDialog(jreHomeText.getText());
+				if (selectedPath != null && selectedPath.length() > 0) {
+					jreHomeText.setText(selectedPath);
+				}
+			}
+		});
 		
 		plusTop(1);
 		
