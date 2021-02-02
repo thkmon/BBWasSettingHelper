@@ -4,6 +4,7 @@ import com.thkmon.was.common.CConst;
 import com.thkmon.was.error.MsgException;
 import com.thkmon.was.file.FileModifyUtil;
 import com.thkmon.was.file.FolderUtil;
+import com.thkmon.was.path.PathUtil;
 import com.thkmon.was.setting.data.Replacement;
 import com.thkmon.was.setting.data.ReplacementList;
 
@@ -45,11 +46,11 @@ public class TomcatSettingHelper extends SettingHelper {
 				StringBuffer newStrBuff = new StringBuffer();
 				newStrBuff.append("rem Make sure prerequisite environment variables are set");
 				newStrBuff.append(CConst.CARRIAGE_RETURN);
-				newStrBuff.append("set JAVA_HOME=").append(javaHomePath);
+				newStrBuff.append("set JAVA_HOME=").append(PathUtil.revisePath(javaHomePath));
 				newStrBuff.append(CConst.CARRIAGE_RETURN);
-				newStrBuff.append("set JRE_HOME=").append(jreHomePath);
+				newStrBuff.append("set JRE_HOME=").append(PathUtil.revisePath(jreHomePath));
 				newStrBuff.append(CConst.CARRIAGE_RETURN);
-				newStrBuff.append("set CATALINA_HOME=").append(tomcatPath);
+				newStrBuff.append("set CATALINA_HOME=").append(PathUtil.revisePath(tomcatPath));
 				newStrBuff.append(CConst.CARRIAGE_RETURN);
 				String newStr = newStrBuff.toString();
 								
@@ -200,7 +201,7 @@ public class TomcatSettingHelper extends SettingHelper {
 							continue;
 						}
 						
-						newStrBuff.append("      <Context docBase=\"" + oneDocBase + "\" path=\"" + onePath + "\" reloadable=\"false\"/>");
+						newStrBuff.append("      <Context docBase=\"" + oneDocBase + "\" path=\"" + onePath + "\" reloadable=\"true\"/>");
 					}
 					
 					newStrBuff.append(CConst.CARRIAGE_RETURN);

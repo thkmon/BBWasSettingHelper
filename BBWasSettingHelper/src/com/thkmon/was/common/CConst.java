@@ -27,7 +27,7 @@ public class CConst {
 	public static final String JRE_HOME = getOption("JRE_HOME", "");
 	public static final String VM_ARGUMENTS = getOption("VM_ARGUMENTS", "");
 	
-	public static String destDir = getOption("RESULT_DIR", "C:/0_was");
+	public static String destDir = getOption("RESULT_DIR", "C:\\0_was");
 	
 	public static Color buttonColor = new Color(200, 200, 200);
 	public static Color buttonTextColor = new Color(0, 0, 0);

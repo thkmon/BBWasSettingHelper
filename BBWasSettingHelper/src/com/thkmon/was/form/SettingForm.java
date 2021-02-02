@@ -20,7 +20,9 @@ import com.thkmon.was.common.CConst;
 import com.thkmon.was.datetime.DatetimeUtil;
 import com.thkmon.was.error.MsgException;
 import com.thkmon.was.main.BBWasSettingHelper;
+import com.thkmon.was.path.PathUtil;
 import com.thkmon.was.setting.SettingData;
+import com.thkmon.was.setting.auto.AutoSettingUtil;
 import com.thkmon.was.string.StringUtil;
 
 public class SettingForm {
@@ -118,6 +120,8 @@ public class SettingForm {
 				String selectedPath = new DialogWrapper().openFolderDialog(projectFolderText.getText());
 				if (selectedPath != null && selectedPath.length() > 0) {
 					projectFolderText.setText(selectedPath);
+					
+					AutoSettingUtil.doAutoSetting();
 				}
 			}
 		});
@@ -455,8 +459,8 @@ public class SettingForm {
 	 */
 	private String getNotExistingDestDirPath() {
 		
-		String prefix = CConst.destDir + "/" + DatetimeUtil.getTodayDate().substring(2);
-		prefix = StringUtil.revisePath(prefix);
+		String prefix = CConst.destDir + "\\" + DatetimeUtil.getTodayDate().substring(2);
+		prefix = PathUtil.revisePath(prefix);
 		
 		int num = 0;
 		String numStr = "";
@@ -484,7 +488,7 @@ public class SettingForm {
 			break;
 		}
 	
-		return StringUtil.revisePath(dir.getAbsolutePath());
+		return PathUtil.revisePath(dir.getAbsolutePath());
 	}
 	
 	

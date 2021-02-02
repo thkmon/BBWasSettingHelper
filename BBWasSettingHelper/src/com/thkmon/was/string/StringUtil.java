@@ -100,25 +100,4 @@ public class StringUtil {
 
 		return result;
 	}
-
-	public static String revisePath(String path) {
-		return makeToSlashPath(path);
-	}
-
-	public static String makeToSlashPath(String path) {
-		if (path == null || path.trim().length() == 0) {
-			return "";
-
-		} else {
-			path = path.trim();
-		}
-
-		path = path.replace("\\", "/");
-
-		while (path.indexOf("//") > -1) {
-			path = path.replace("//", "/");
-		}
-
-		return path;
-	}
 }

@@ -5,6 +5,8 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.nio.channels.FileChannel;
 
+import com.thkmon.was.path.PathUtil;
+
 public class FileCopyUtil {
 
 	public static boolean copyFile(File originFile, File newFile) throws Exception {
@@ -111,22 +113,11 @@ public class FileCopyUtil {
 			return false;
 
 		} else {
-			filePath = filePath.trim();
+			filePath = PathUtil.revisePath(filePath);
 		}
-
-		// 역슬래시를 슬래시로 모두 변경
-		if (filePath.indexOf("\\") > -1) {
-			filePath = filePath.replace("\\", "/");
-		}
-
-		// 슬래시 2개를 슬래시 1개로 모두 변경
-		while (filePath.indexOf("//") > -1) {
-			filePath = filePath.replace("//", "/");
-		}
-
+		
 		// 필요한 디렉토리 만들기
-		int lastSlashPos = filePath.lastIndexOf("/");
-
+		int lastSlashPos = filePath.lastIndexOf(File.separator);
 		if (lastSlashPos > -1) {
 			File d = new File(filePath.substring(0, lastSlashPos));
 			if (d.exists()) {
