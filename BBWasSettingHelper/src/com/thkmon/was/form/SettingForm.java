@@ -112,6 +112,23 @@ public class SettingForm {
 		projectFolderText = bForm.addTextInput(left, top, width - SMALL_BUTTON_GAP, 25);
 		projectFolderText.setText(CConst.PROJECT_PATH);
 		
+		projectFolderText.addKeyListener(new KeyListener() {
+			@Override
+			public void keyTyped(KeyEvent e) {
+				
+			}
+			
+			@Override
+			public void keyReleased(KeyEvent e) {
+				// 프로젝트 폴더 경로에 따라 인풋박스 자동세팅
+				AutoSettingUtil.doAutoSetting();
+			}
+			
+			@Override
+			public void keyPressed(KeyEvent e) {
+			}
+		});
+		
 		projectFolderButton = bForm.addButton(left + (width - SMALL_BUTTON_GAP) + 10, top, SMALL_BUTTON_WIDTH, SMALL_BUTTON_HEIGHT, "Set");
 		projectFolderButton.addActionListener(new ActionListener() {
 			
@@ -121,6 +138,7 @@ public class SettingForm {
 				if (selectedPath != null && selectedPath.length() > 0) {
 					projectFolderText.setText(selectedPath);
 					
+					// 프로젝트 폴더 경로에 따라 인풋박스 자동세팅
 					AutoSettingUtil.doAutoSetting();
 				}
 			}
@@ -141,7 +159,6 @@ public class SettingForm {
 		httpPortText.addKeyListener(new KeyListener() {
 			@Override
 			public void keyTyped(KeyEvent e) {
-				onKeyPressed();
 			}
 			
 			@Override
@@ -151,7 +168,6 @@ public class SettingForm {
 			
 			@Override
 			public void keyPressed(KeyEvent e) {
-				onKeyPressed();
 			}
 			
 			private void onKeyPressed() {

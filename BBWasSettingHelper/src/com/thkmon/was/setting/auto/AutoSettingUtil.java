@@ -5,6 +5,9 @@ import com.thkmon.was.path.PathUtil;
 
 public class AutoSettingUtil {
 	
+	/**
+	 * 프로젝트 폴더 경로에 따라 인풋박스 자동세팅
+	 */
 	public static void doAutoSetting() {
 		String projectFolderPath = SettingForm.projectFolderText.getText();
 		if (projectFolderPath == null || projectFolderPath.length() == 0) {
