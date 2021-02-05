@@ -7,7 +7,7 @@ import com.thkmon.was.string.StringUtil;
 import com.thkmon.was.string.data.StringMap;
 
 public class CConst {
-	public static String version = "210130";
+	public static String version = "210205";
 		
 	private static final StringMap optionPropFile = new PropFileController().readPropFile("option.properties");
 	public static String getOption(String keyText, String defaultStr) {
